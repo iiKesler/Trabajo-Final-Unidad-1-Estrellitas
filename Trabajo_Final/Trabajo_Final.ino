@@ -6,14 +6,15 @@ enum class Task1States {
     WAIT_DATA
 };
 
+static auto task1State = Task1States::INIT;
+static char password[5];
+static uint8_t dataCounter = 0;
+static uint8_t numbersPassword = 0; // Falso
+static uint32_t defuseTime = 5;
+static constexpr uint32_t INTERVAL = 1000;
+static uint32_t lastTime = 0;
+
 void defuse() {
-    static auto task1State = Task1States::INIT;
-    char password[5];
-    uint8_t dataCounter = 0;
-    uint8_t numbersPassword = 0; // Falso
-    uint32_t defuseTime = 5;
-    constexpr uint32_t INTERVAL = 1000;
-    uint32_t lastTime = 0;
 
     switch (task1State) {
         case Task1States::INIT: {
@@ -21,7 +22,7 @@ void defuse() {
             task1State = Task1States::CONFIG;
             break;
         }
-case Task1States::CONFIG: {
+        case Task1States::CONFIG: {
             Serial.println("S para subir");
 
             while (true) {
@@ -35,11 +36,11 @@ case Task1States::CONFIG: {
 
                     if (c == 'S') {
                         defuseTime++;
-                        Serial.println("Subio");
+                        Serial.println("Subio ");
                     }
                     if (c == 'B') {
                         defuseTime--;
-                        Serial.println("Bajo");
+                        Serial.println("Bajo ");
                     }
                     Serial.println(defuseTime);
                 }
