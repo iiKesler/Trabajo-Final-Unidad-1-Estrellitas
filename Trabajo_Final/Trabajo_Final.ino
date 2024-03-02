@@ -1,5 +1,5 @@
 #include <Arduino.h>
-
+void defuse() {
 enum class Task1States {
     INIT,
     CONFIG,
@@ -10,8 +10,9 @@ static auto task1State = Task1States::INIT;
 static char password[5];
 static uint8_t dataCounter = 0;
 static char result[2];
+static uint8_t numbersPassword = 0; // Falso
 
-void defuse() {
+
     switch (task1State) {
         case Task1States::INIT: {
             Serial.begin (115200);
@@ -20,20 +21,28 @@ void defuse() {
         }
 
         // The bomb starts at 5 seconds, "S" is + 1 second, "B" is - 1 second, "L" exits configuration mode
-        case  Task1States::CONFIG:{
+        case  Task1States::CONFIG:
+        {
+          Serial.print("S para subir");
+
             uint32_t defuseTime = 5;
+
             while (true) {
                 if (Serial.available()) {
                     const char c = Serial.read();
                     if (c == 'L') {
+                      Serial.print("Ahora sigue la cuenta regresiva");
                         task1State = Task1States::WAIT_DATA;
                         break;
                     }
+
                     if (c == 'S') {
                         defuseTime++;
+                        Serial.print("Subio");
                     }
                     if (c == 'B') {
                         defuseTime--;
+                        Serial.print("Bajo");
                     }
                     Serial.println(defuseTime);
                 }
@@ -45,26 +54,26 @@ void defuse() {
             if (Serial.available()) {
                 const char c = Serial.read();
                 if (c == 'C') {
-                    task1State = Task1States::WAIT_DATA;
                     dataCounter = 0;
-                } else if (task1State == Task1States::WAIT_DATA) {
+                    numbersPassword = 1;
+
                     password[dataCounter++] = c;
-                    if (dataCounter == 4) {
+                    if (dataCounter == 4 && numbersPassword = 1) {
                         password[dataCounter] = '\0'; // null terminate the password
                         if (strcmp(password, "1234") == 0) {
                             Serial.println("YOU SAVED THE WORLD");
-                        } else {
+                            task1State = Task1States::CONFIG;
+                        } 
+                        else {
+                            Serial.print("contrasena incorrecta");
                             task1State = Task1States::CONFIG;
                         }
                         dataCounter = 0;
-                    }
-                } else {
-                    task1State = Task1States::CONFIG;
+                    } 
                 }
-            }
             break;
+          }
         }
-
         default: {
             break;
         }
@@ -72,9 +81,10 @@ void defuse() {
 }
 
 void setup () {
-  defuse ();
+  defuse();
 }
 
-void loop () {
- defuse ();
+void loop () 
+{
+  defuse();
 }
