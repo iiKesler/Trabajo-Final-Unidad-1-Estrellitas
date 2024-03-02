@@ -49,14 +49,14 @@ void defuse() {
         }
 
         case Task1States::WAIT_DATA: {
-              while (defuseTime > 0 && numbersPassword == 1) {
-                        uint32_t currentTime = millis();
+              while (defuseTime > 0) {
+                uint32_t currentTime = millis();
 
                   if ((currentTime - lastTime) >= INTERVAL) {
-                      lastTime = currentTime;
-                      defuseTime--;
-                      Serial.println("Tiempo restante");
-                      Serial.println(defuseTime);
+                    lastTime = currentTime;
+                    defuseTime--;
+                    Serial.println("Tiempo restante");
+                    Serial.println(defuseTime);
                 }
               }
 
@@ -91,9 +91,9 @@ void defuse() {
 }
 
 void setup() {
-    defuse();
+  defuse();
 }
 
 void loop() {
-    defuse();
+  defuse();
 }
