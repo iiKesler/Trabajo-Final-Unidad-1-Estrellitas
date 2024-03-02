@@ -72,9 +72,9 @@ void defuse() {
 }
 
 void setup () {
-// write your initialization code here
+  defuse ();
 }
 
 void loop () {
-// write your code here
+ defuse ();
 }
