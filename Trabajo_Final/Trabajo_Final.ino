@@ -50,41 +50,41 @@ void defuse() {
     }
 
     case Task1States::WAIT_DATA: {
-      while (defuseTime > 0) {
-        uint32_t currentTime = millis();
+      do {
+          uint32_t currentTime = millis();
 
-        if ((currentTime - lastTime) >= INTERVAL) {
-          lastTime = currentTime;
-          defuseTime--;
-          Serial.println("Tiempo restante");
-          Serial.println(defuseTime);
-        }
-      }
-
-      if (Serial.available()) {
-        const char c = Serial.read();
-
-        if (c == 'C') {
-          dataCounter = 0;
-          numbersPassword = 1;
-
-          password[dataCounter++] = c;
-          password[dataCounter] = '\0'; // null terminate the password
-
-          if (strcmp(password, "1234") == 0) {
-            Serial.println("YOU SAVED THE WORLD");
-            task1State = Task1States::CONFIG;
-          } 
-          else {
-            Serial.println("Contraseña incorrecta");
-            task1State = Task1States::CONFIG;
+          if ((currentTime - lastTime) >= INTERVAL) {
+            lastTime = currentTime;
+            defuseTime--;
+            Serial.println("Tiempo restante");
+            Serial.println(defuseTime);
           }
+
+        if (Serial.available()) {
+          const char c = Serial.read();
+
+          if (c == 'C') {
+            dataCounter = 0;
+            numbersPassword = 1;
+
+            password[dataCounter++] = c;
+            password[dataCounter] = '\0'; // null terminate the password
+
+            if (strcmp(password, "1234") == 0) {
+              Serial.println("YOU SAVED THE WORLD");
+              task1State = Task1States::CONFIG;
+            } 
+            else {
+              Serial.println("Contraseña incorrecta");
+              task1State = Task1States::CONFIG;
+            }
           dataCounter = 0;
+          }
         } 
         else {
           task1State = Task1States::CONFIG;
         }
-      }
+      } while (defuseTime > 0);
       break;
     }
 
