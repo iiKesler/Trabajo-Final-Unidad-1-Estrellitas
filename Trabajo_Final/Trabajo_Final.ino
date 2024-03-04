@@ -63,7 +63,7 @@ void defuse() {
     }
     case DefuseStates::WAIT_DATA: {
       do {                    
-        if (Serial.available()>0){
+        if (Serial.available() > 0){
           password[dataCounter] = Serial.read();
           dataCounter++;
           if(dataCounter == 5){
