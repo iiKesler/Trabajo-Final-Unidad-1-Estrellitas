@@ -1,12 +1,12 @@
 #include <Arduino.h>
 
-enum class Task1States {
+enum class DefuseStates {
   INIT,
   CONFIG,
   WAIT_DATA
 };
 
-static auto task1State = Task1States::INIT;
+static auto defuseState = DefuseStates::INIT;
 static char password[5];
 static uint8_t dataCounter = 0;
 static uint32_t defuseTime = 5;
@@ -16,16 +16,16 @@ static uint32_t lastTime = 0;
 static uint8_t result[2];
 
 void defuse() {
-  switch (task1State) {
-    case Task1States::INIT: {
+  switch (defuseState) {
+    case DefuseStates::INIT: {
       Serial.begin(115200);
       delay(2000);
       Serial.print("AHORA ENTRANDO AL MODO CONFIGURACIÓN");
       delay(2000);
-      task1State = Task1States::CONFIG;
+      defuseState = DefuseStates::CONFIG;
       break;
     }
-    case Task1States::CONFIG: {
+    case DefuseStates::CONFIG: {
       defuseTime = 5;
       Serial.println("'S' para aumentar 1 segundo, 'B' para bajar 1 segundo, 'L' para salir de la configuración. ");
       Serial.println("Segundos por defecto: 5");
@@ -35,7 +35,7 @@ void defuse() {
           if (c == 'L') {
             Serial.println("Ahora Inicia la cuenta regresiva ");
             delay(2000);
-            task1State = Task1States::WAIT_DATA;
+            defuseState = DefuseStates::WAIT_DATA;
             break;
           }
           if (c == 'S') {
@@ -61,7 +61,7 @@ void defuse() {
       }
       break;
     }
-    case Task1States::WAIT_DATA: {
+    case DefuseStates::WAIT_DATA: {
       do {                    
         if (Serial.available()>0){
           password[dataCounter] = Serial.read();
@@ -74,12 +74,12 @@ void defuse() {
             if(result[1] == 1){
               Serial.println("Salvaste el mundo");
               delay(2000);
-              task1State = Task1States::CONFIG;
+              defuseState = DefuseStates::CONFIG;
               break;
             }
             else{
               Serial.println("Respuesta incorrecta");
-              task1State = Task1States::WAIT_DATA;
+              defuseState = DefuseStates::WAIT_DATA;
               break;
             }          
           }
@@ -100,7 +100,7 @@ void defuse() {
           if ((currentTime2 - lastTime) >= INTERVAL2) {
             is = false;
             delay(2000);
-            task1State = Task1States::CONFIG;
+            defuseState = DefuseStates::CONFIG;
             break;
           }  
         }while(is == true);          
